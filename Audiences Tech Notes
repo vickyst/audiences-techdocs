@@ -1,0 +1,20 @@
+
+KAFKA
+Connecting to kafka and consuming the firehose topic
+connect to dev on the VPN.
+kafka-console-consumer --bootstrap-server broker.kafka:9092 --topic TOPIC-NAME
+kafka-console-consumer --bootstrap-server broker.kafka:9092 --topic gnip.tweets.firehose
+
+CASSANDRA
+for cassandra, just download a copy of cassandra and use cqlsh
+
+MONGO
+create a new connection to `mongodb.mongodb:27017` whilst on dev
+cli mongo --host mongodb.mongodb:27017
+
+MNEMOSYNE
+
+
+
+To see logs, to go Rancher, click through to service and elipses menu lets you get to logs and also
+get to a cli for the box

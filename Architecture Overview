@@ -1,0 +1,71 @@
+servers are in Byfleet
+use Rancher to see boxes / services
+
+there is a lets-encrypt-service
+and virtual IP addresses (VIPS)
+VX-LAN
+
+
+USUAL REQUEST
+HTTP -> load balancer (there are 3) -> audience client(FE) -> audience service(webapp / service entry point)
+
+But can hit audience-service directly (e.g status cake)
+
+SERVICES
+Audiences-service = webapp ( all endpoints should be here, if you write a micro-service it should have an entry point here)
+                    and also search logic for audience searches.
+Audience-client = frontend
+Audience-rest-api = just forwards it to audience-service (something for me?)
+Followers-list-service = deals with info about followers lists, asking for metrics
+Page-metadata =
+Profile-service = twitter profiles service
+Token-store-service = pool of tokens, can add tokens with this
+Twitter-ads-service = exports to twitter ads etc
+
+
+mongo-db-backup = nightly backup to hdfs
+configuration-loader = load config on startup
+
+INFRASTRUCTURE
+Cassandra = store tweets, kafka formatted data.  key-value store
+Consul = config database / store (this will move to spring cloud config (github) )
+Memcached = FE sessions but this is going away
+Rancher-monitor = checks rancher health and pings slack
+Zookeeper = co-ordination layer
+
+JANITOR
+spotify-cg = garbage collects stopped containers in Docker
+container-crontab = scans looking for cron label (which you can add to a container) and starts them according to that label
+
+JOBS
+firehose-producer = connects to GNIP with HTTP, sends the firehose in JSON, line seperated, sends to firehose kafka topic
+  sends to  ---
+  - decahose-archiver = which archives the tweets in AWS S3
+  - GNIP mirror service = chunks it into tweets, retweets,
+    which sends to  ---- another topic as avro
+  - GNIP compliance producer   --
+      -- tweet compliance  processor (these delete from cassandra / Mnemosyne)
+      -- tweet user processor (as above)
+
+GNIP injestion-service   - takes avro from GNIP mirror service and does profile extraction . also gets links and sends to CRAWLER. Adds metadata --->
+    -- fires into a kafka topic with the metadata ALSO Mnemosyne reads from this directly
+    CRAWLER gets metadata from links
+GNIP-emotion-services  - adds emotion as above
+GNIP-interest-injestion-service - to be consumed by Mnemosyne.
+Follower-import-service - polls mongo for jobs and outputs them to KAFKA (finds followers of a given account)
+Follower-import-assembler - reads topic from above and mongo and Mnemosyne
+
++ others (see in Rancher)
+
+ALL ONTO A kafka topic that now has avro hydrated tweets with metadata, which is read by the ...
+
+datastore-populator - reads from kafka, writes to Cassandra, nothing else
+
+
+
+
+DATA
+Cassandra and Mnemosyne = sidestores
+Kafka = point of truth
+Mongo =
+Redis = for web cache
