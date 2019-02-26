@@ -9,12 +9,46 @@ CASSANDRA
 for cassandra, just download a copy of cassandra and use cqlsh
 
 MONGO
-create a new connection to `mongodb.mongodb:27017` whilst on dev
-cli mongo --host mongodb.mongodb:27017
+create a new connection (dev) to `mongodb.mongodb:27017` whilst on dev
+mongo --host mongodb.mongodb:27017
+use audiences
+db.getCollectionNames();
+
+Mongo live= mongos.mongodb:21707
+Mongo Dev = mongodb.mongodb:27017
 
 MNEMOSYNE
 
 
-
+RANCHER LOGS
 To see logs, to go Rancher, click through to service and elipses menu lets you get to logs and also
 get to a cli for the box
+
+ENV VARS IN Rancher
+ config params you need to set are here: https://github.com/BrandwatchLtd/audiences-platform/blob/master/docs/service-resolver.md
+
+Add them in rancher as an environment variable called `JAVA_OPTS` so as an example:
+`JAVA_OPTS=-DservicerResolver.hostname.mnemosyne=query-proxy.mnemosyne-dev`
+Click upgrade and the first page you see have the environment variables on it.
+
+LINTING
+npx eslint PATH --fix
+
+RANCHER
+Docker was not pulling new images - luke used ansible to clear the image caches
+on all the boxes.
+https://stackoverflow.com/c/brandwatch/questions/1306
+
+MNEMOSYNE SNAPSHOTS
+these can take up disk space.  to clear ssh to box and:
+sudo rm - rf /mnt/pool/mnemosyne/snapshots
+
+
+TO DEPLOY
+Get master build number from jenkins
+let channel know
+copy config commands, run , check in rancher
+then cd to services, copy command, run, check
+then jobs, copy, run, check
+Check rancher for happy deploys, ticks.  Check app.
+Can rollback each service in rancher elipses menu

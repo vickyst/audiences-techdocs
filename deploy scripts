@@ -1,0 +1,17 @@
+BRANCH=master \
+VERSION=137 \
+ENVIRONMENT=production \
+rancher \
+up --batch-size 1 -p -d -u
+
+BRANCH=master \
+VERSION=137 \
+ENVIRONMENT=production \
+rancher \
+up --batch-size 1 --interval 30000 -p -d --env-file envs-live -u
+
+BRANCH=master \
+VERSION=137 \
+ENVIRONMENT=production \
+rancher \
+up  --batch-size 999 -p -d --env-file envs-live.sh -u
